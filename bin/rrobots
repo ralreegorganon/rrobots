@@ -1,4 +1,5 @@
-require 'robot'
+#!/usr/bin/env ruby
+require 'rrobots'
 
 class Numeric
    TO_RAD = Math::PI / 180.0
@@ -174,7 +175,7 @@ def run_out_of_gui(battlefield)
 end
 
 def run_in_gui(battlefield, xres, yres, speed_multiplier)
-  require 'tkarena'
+  require 'rrobots/tkarena'
   arena = TkArena.new(battlefield, xres, yres, speed_multiplier)
   game_over_counter = battlefield.teams.all?{|k,t| t.size < 2} ? 250 : 500
   outcome_printed = false

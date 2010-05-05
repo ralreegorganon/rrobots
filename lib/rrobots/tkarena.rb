@@ -15,7 +15,7 @@ class TkArena
     @xres, @yres = xres, yres
     @speed_multiplier = speed_multiplier
     @text_colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#00ffff', '#ff00ff', '#ffffff', '#777777']
-    @default_skin_prefix = "images/red_"
+    @default_skin_prefix = File.join(File.dirname(__FILE__),"images/red_")
     @on_game_over_handlers = []
     init_canvas
     init_simulation
@@ -62,7 +62,7 @@ class TkArena
     end
 
     @boom = (0..14).map do |i|
-      TkPhotoImage.new(:file => "images/explosion#{i.to_s.rjust(2, '0')}.gif")
+      TkPhotoImage.new(:file => File.join(File.dirname(__FILE__), "images/explosion#{i.to_s.rjust(2, '0')}.gif"))
     end
   end
 
