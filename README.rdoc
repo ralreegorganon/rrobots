@@ -1,38 +1,27 @@
-RRobots v0.2.2
-
-First there was CRobots, followed by PRobots and many others, recently
-(well also years ago) Robocode emerged and finally this is RRobots bringing
-all the fun to the ruby community.
-
-What is he talking about?
-
+= RRobots
 RRobots is a simulation environment for robots, these robots have a scanner
 and a gun, can move forward and backwards and are entirely controlled by
-ruby scripts. All robots are equal (well at the moment, maybe this will 
-change) except for the ai.
+ruby scripts. 
 
-A simple robot script may look like this:
+== Example script
 
------------------------ code -----------------------
-require 'robot'
+	require 'robot'
 
-class NervousDuck
-   include Robot
+	class NervousDuck
+	   include Robot
 
-  def tick events
-    turn_radar 1 if time == 0
-    turn_gun 30 if time < 3
-    accelerate 1
-    turn 2
-    fire 3 unless events['robot_scanned'].empty? 
-  end
-end
------------------------ code -----------------------
+	  def tick events
+	    turn_radar 1 if time == 0
+	    turn_gun 30 if time < 3
+	    accelerate 1
+	    turn 2
+	    fire 3 unless events['robot_scanned'].empty? 
+	  end
+	end
 
-all you need to implement is the tick method which should accept a hash
-of events occured turing the last tick.
+All you need to implement is the tick method which should accept a hash of events that occurred during the last tick.
 
-By including Robot you get all this methods to controll your bot:
+The following methods are available to your bot:
 
   battlefield_height  #the height of the battlefield
   battlefield_width   #the width of the battlefield
@@ -78,6 +67,8 @@ want more precission you have to turn your radar slower.
 RRobots is implemented in pure ruby using a tk ui and should run on all
 platforms that have ruby and tk. (until now it's tested on windows, OS X
 and several linux distributions)
+
+== Usage
 
 To start a match call:
 
