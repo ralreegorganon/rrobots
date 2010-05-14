@@ -275,7 +275,7 @@ def to_html match_data, html
 	rankings = {}
 	stats.each{|stat| rankings[stat] = rank_by_round_stat(stat, rounds)}
 	
-	print_index(stats, rankings, stats, html) #pass stats array in insted of using rankings.keys so we can preserve order
+	print_index(stats, rankings, stats, html) #pass stats array in instead of using rankings.keys so we can preserve order
 	stats.each {|stat|  print_round_table(stat, rounds, rankings[stat],stats, html) }
 	print_footer(html)
 	html.close
