@@ -236,8 +236,8 @@ def print_index(round_tables, rankings, stats, html)
   
   html.puts "</tr></table>"
   
-  html.puts <<ENDHTML
-  <h1>Definitions:</h1>
+  html.puts """
+    <h1>Definitions:</h1>
     <ul>
       <li>  Wins:  The numer of matches (battles) won by a robot.  (ties or timeouts earn both bots 0.5)</li>
       <li>  Points:  Similar to wins, but timeouts earn bots points proportional to their amount of health.  There is a chance this doesn't work properly yet</li>
@@ -247,7 +247,7 @@ def print_index(round_tables, rankings, stats, html)
       <li>  Timedout:  Number of times a robot was in a match that timed out</li>
       <li>  Ties:  Number of matches a robot was in that ended in a tie </li>
     </ul>
-ENDHTML
+  """
   print_footer(html)
 end
 
