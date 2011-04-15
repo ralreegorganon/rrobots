@@ -120,11 +120,11 @@ def setup_battlefield(options, robots)
   robots.map! do |robot|
     begin
       begin
-        require robot.downcase
+        require "./"+robot.downcase
       rescue LoadError
       end
       begin
-        require robot
+        require "./"+robot
       rescue LoadError
     end
     in_game_name = File.basename(robot).sub(/\..*$/, '')
@@ -136,7 +136,6 @@ def setup_battlefield(options, robots)
     rescue Exception => error
       puts 'Error loading ' + robot + '!'
       warn error
-      usage
     end
     in_game_name
   end
