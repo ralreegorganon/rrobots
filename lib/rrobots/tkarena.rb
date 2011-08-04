@@ -170,8 +170,11 @@ class TkArena
     end
   end
 
-  def run
+  def show
     Tk.mainloop
+  end
+  
+  def close
   end
 
 end

@@ -66,7 +66,8 @@ def run_out_of_gui(battlefield)
 end
 
 def run_in_gui(battlefield, xres, yres, speed_multiplier)
-  arena = TkArena.new(battlefield, xres, yres, speed_multiplier)
+  require 'rrobots/gui'
+  arena = RRobotsGameWindow.new(battlefield, xres, yres)
   game_over_counter = battlefield.teams.all?{|k,t| t.size < 2} ? 250 : 500
   outcome_printed = false
   arena.on_game_over{|battlefield|
@@ -74,10 +75,13 @@ def run_in_gui(battlefield, xres, yres, speed_multiplier)
       print_outcome(battlefield)
       outcome_printed = true
     end
-    exit 0 if game_over_counter < 0
+    if game_over_counter < 0
+      arena.close
+      exit 0
+    end
     game_over_counter -= 1
   }
-  arena.run
+  arena.show
 end
 
 def print_outcome(battlefield)
