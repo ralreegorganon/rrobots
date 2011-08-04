@@ -1,7 +1,52 @@
 #!/usr/bin/env ruby
 
 require "YAML"
+require 'optparse'
+require 'ostruct'
 require 'rrobots/tournament'
+
+
+class OptionsParser
+  def self.parse!(args)
+    options = OpenStruct.new
+    options.resolution  = [800,800]
+    options.matches = 2
+    options.timeout = 10000
+
+    opts = OptionParser.new do |opts|
+      opts.banner = "Usage: tournament [options] file1 file2 ..."
+
+      opts.on("--resolution x,y", Array, "X and Y resolution") do |resolution|
+        options.resolution = resolution.map &:to_i
+      end
+
+      opts.on("--matches N", Integer, "Number of times each robot fights each other robot N") do |n|
+        options.matches = n
+      end
+
+      opts.on("--timeout N", Integer, "Maximum number of ticks for a match") do |n|
+        options.timeout = n
+      end
+      
+      opts.on("--dir N", String, "All robots from this directory will be matched against each other") do |n|
+        options.directory = n
+      end
+
+      opts.on_tail("-h", "--help", "Show this message") do
+        puts opts
+        exit
+      end
+    end
+    opts.parse!(args)
+    if ARGV.size == 0 and options.directory.nil?
+      puts opts
+      exit
+    end
+    return options
+  end
+end
+
+
 
 def print_header(html)
   header = '''  
@@ -156,52 +201,19 @@ end
 # Main
 ####################################################################
 
-def usage
-  puts "Usage: ruby tournament.rb [-timeout=<N>] [-matches=<N>] (-dir=<Directory> | <RobotClassName[.rb]>+)"
-  puts "\t[-timeout=<N>] (optional, default 10000) number of ticks a match will last at most."  
-  puts "\t[-matches=<N>] (optional, default 2) how many times each robot fights every other robot."  
-  puts "\t-dir=<Directory> All .rb files from that directory will be matched against each other."  
-  puts "\tthe names of the rb files have to match the class names of the robots."
-  exit(0)
-end
-
-#look for timeout arg
-timeout = 10000
-ARGV.grep( /^-timeout=(\d+)/ )do |item|
-  timeout = $1.to_i
-  ARGV.delete(item)
-end
-
-matches_per_round = 2
-ARGV.grep( /^-matches=(\d+)/ )do |item|
-  matches_per_round = $1.to_i
-  ARGV.delete(item)
-end
-
-folder = '.'
-robots = ARGV
-ARGV.grep( /^-dir=(.+)$/ )do |item|
-  begin
-    folder = $1
-    pwd = Dir.pwd
-    Dir.chdir(folder)
-    robots = Dir.glob('*.rb')
-    Dir.chdir(pwd)
-    ARGV.delete(item)
-  rescue Exception
-    puts "can't change directory to '#{folder}'"
-    exit(0)
-  end
-end
-
-ARGV.grep( /^-(.*)$/ )do |item|
-  puts "Unknown option '-#{$1}'"
-  puts
-  usage
-end
-
-usage if robots.length <= 1
 $stdout.sync = true
+
+options = OptionsParser.parse!(ARGV)
+robots = ARGV
+
+if(!options.directory.nil?)
+  pwd = Dir.pwd
+  Dir.chdir(options.directory)
+  robots = Dir.glob('*.rb')
+  Dir.chdir(pwd)
+else
+  options.directory = '.'
+end
 
 suffix=0
 while File.exists?('tournament'  + suffix.to_s.rjust(2, '0') + '.yml')
@@ -222,9 +234,9 @@ robots.each do |bot1|
     puts "===== Round #{round_number}:   #{bot1} vs  #{bot2}   ====="
     i = 1
     matches = []
-    matches_per_round.times do |i|
-      puts "- Match #{i+1} of #{matches_per_round} -"
-      cmd = "rrobots --no-gui --timeout #{timeout} #{folder}/#{bot1} #{folder}/#{bot2}"
+    options.matches.times do |i|
+      puts "- Match #{i+1} of #{options.matches} -"
+      cmd = "rrobots --no-gui --timeout #{options.timeout} #{options.directory}/#{bot1} #{options.directory}/#{bot2}"
       
       # using popen instead of `cmd` lets us see the progress dots (......) output as the match progresses.
       sub = IO.popen(cmd)
@@ -234,7 +246,7 @@ robots.each do |bot1|
       match_data = YAML.load(results_string)
       match_data['match'] = i
       match_data['round'] = round_number
-      match_data['timedout'] = 1 if timeout <= match_data['elapsed_ticks']
+      match_data['timedout'] = 1 if options.timeout <= match_data['elapsed_ticks']
       @all_match_data << match_data
       
       match = Match.new(match_data)
