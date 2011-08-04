@@ -18,8 +18,8 @@ class RRobotsGameWindow < Gosu::Window
   def initialize(battlefield, xres, yres)
     super(xres, yres, false, 16)
     self.caption = 'RRobots'
-    @font = Gosu::Font.new(self, BIG_FONT, xres / 20)
-    @small_font = Gosu::Font.new(self, SMALL_FONT, 12) #xres/100
+    @font = Gosu::Font.new(self, BIG_FONT, 24)
+    @small_font = Gosu::Font.new(self, SMALL_FONT, 24) #xres/100
     @background_image = Gosu::Image.new(self, File.join(File.dirname(__FILE__),"../images/space.png"), true)
     @battlefield = battlefield
     @xres, @yres = xres, yres
