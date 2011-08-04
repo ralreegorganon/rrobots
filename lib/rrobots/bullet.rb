@@ -1,5 +1,3 @@
-require 'rrobots/explosion'
-
 class Bullet
   attr_accessor :x
   attr_accessor :y
