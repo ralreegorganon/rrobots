@@ -99,13 +99,10 @@ class RRobotsGameWindow < Gosu::Window
       @robots[ai].body.draw_rot(ai.x / 2, ai.y / 2, ZOrder::Robot, (-(ai.heading-90)) % 360)
       @robots[ai].gun.draw_rot(ai.x / 2, ai.y / 2, ZOrder::Robot, (-(ai.gun_heading-90)) % 360)
       @robots[ai].radar.draw_rot(ai.x / 2, ai.y / 2, ZOrder::Robot, (-(ai.radar_heading-90)) % 360)
-      if @talkative
-        @robots[ai].info.draw("#{ai.name}\n#{'|' * (ai.energy / 5)}", ai.x / 2 - 50, ai.y / 2 + 30, ZOrder::UI, 1.0, 1.0, font_col)
-        @robots[ai].status.draw("#{ai.name.ljust(20)} #{'%.1f' % ai.energy}", ai.x / 2 - 50, ai.y / 2 + 30, ZOrder::UI, 1.0, 1.0, font_col)
-      else
-        @robots[ai].speech.draw_rel(ai.speech.to_s, ai.x / 2, ai.y / 2 - 40, ZOrder::UI, 0.5, 0.5, 1, 1, font_col)
-        @robots[ai].info.draw_rel("#{ai.name}", ai.x / 2, ai.y / 2 + 30, ZOrder::UI, 0.5, 0.5, 1, 1, font_col)
-      end
+      
+      @robots[ai].speech.draw_rel(ai.speech.to_s, ai.x / 2, ai.y / 2 - 40, ZOrder::UI, 0.5, 0.5, 1, 1, font_col)
+      @robots[ai].info.draw_rel("#{ai.name}", ai.x / 2, ai.y / 2 + 30, ZOrder::UI, 0.5, 0.5, 1, 1, font_col)
+      @robots[ai].info.draw_rel("#{ai.energy.to_i}", ai.x / 2, ai.y / 2 + 50, ZOrder::UI, 0.5, 0.5, 1, 1, font_col)
     end
   end
 
