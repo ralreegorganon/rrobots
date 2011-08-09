@@ -9,7 +9,6 @@ class OptionsParser
     options.resolution  = [800,800]
     options.match = Time.now.to_i + Process.pid
     options.gui = true
-    options.speed = 1
     options.timeout = 50000
     options.teams = 8
 
@@ -22,10 +21,6 @@ class OptionsParser
 
       opts.on("--match N", Integer, "Replay match number N") do |n|
         options.match = n
-      end
-
-      opts.on("--speed N", Integer, "Updates GUI after every N ticks") do |n|
-        options.speed = n if n <= 100 or n > 0
       end
 
       opts.on("--timeout N", Integer, "Maximum number of ticks for a match") do |n|
@@ -65,7 +60,7 @@ def run_out_of_gui(battlefield)
   exit 0
 end
 
-def run_in_gui(battlefield, xres, yres, speed_multiplier)
+def run_in_gui(battlefield, xres, yres)
   require 'rrobots/gui'
   arena = RRobotsGameWindow.new(battlefield, xres, yres)
   game_over_counter = battlefield.teams.all?{|k,t| t.size < 2} ? 250 : 500
@@ -153,7 +148,7 @@ robots = ARGV
 battlefield = setup_battlefield(options, robots)  
   
 if options.gui
-  run_in_gui(battlefield, options.resolution[0], options.resolution[1], options.speed)
+  run_in_gui(battlefield, options.resolution[0], options.resolution[1])
 else
   run_out_of_gui(battlefield)
 end
