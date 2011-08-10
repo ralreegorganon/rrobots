@@ -5,19 +5,18 @@ ruby scripts.
 
 == Example script
 
-	require 'robot'
+  require 'rrobots'
+  class NervousDuck
+     include Robot
 
-	class NervousDuck
-	   include Robot
-
-	  def tick events
-	    turn_radar 1 if time == 0
-	    turn_gun 30 if time < 3
-	    accelerate 1
-	    turn 2
-	    fire 3 unless events['robot_scanned'].empty? 
-	  end
-	end
+    def tick events
+      turn_radar 1 if time == 0
+      turn_gun 30 if time < 3
+      accelerate 1
+      turn 2
+      fire 3 unless events['robot_scanned'].empty? 
+    end
+  end
 
 All you need to implement is the tick method which should accept a hash of events that occurred during the last tick.
 
@@ -50,7 +49,7 @@ The following methods are available to your bot:
   turn_radar(degrees) #turns the radar, max 60 degrees per tick
   dead                #true if you are dead
   say(msg)            #shows msg above the robot on screen
-  broadcast(msg)      #broadcasts msg to all bots (they recieve 'broadcasts'
+  broadcast(msg)      #broadcasts msg to all bots (they receive 'broadcasts'
                       #events with the msg and rough direction)
 
 These methods are intentionally of very basic nature, you are free to
@@ -58,52 +57,37 @@ unleash the whole power of ruby to create higher level functions.
 (e.g. move_to, fire_at and so on)
 
 Some words of explanation: The gun is mounted on the body, if you turn
-the body the gun will follow. In a simmilar way the radar is mounted on
+the body the gun will follow. In a similar way the radar is mounted on
 the gun. The radar scans everything it sweeps over in a single tick (100 
 degrees if you turn your body, gun and radar in the same direction) but
 will report only the distance of scanned robots, not the angle. If you 
-want more precission you have to turn your radar slower.
+want more precision you have to turn your radar slower.
 
-RRobots is implemented in pure ruby using a tk ui and should run on all
-platforms that have ruby and tk. (until now it's tested on windows, OS X
-and several linux distributions)
+RRobots is implemented in pure ruby using a Gosu ui and should run on all
+platforms that have ruby and Gosu.
 
 == Usage
 
 To start a match call:
 
-ruby rrobots.rb [resolution] [#match] [-nogui] [-speed=<N>] [-timeout=<N>] 
-      <FirstRobotClassName[.rb]> <SecondRobotClassName[.rb]> <...>
-	  
-  [resolution] (optional) should be of the form 640x480 or 800*600. 
-    default is 800x800
-  [match] (optional) to replay a match, put the match# here, including 
-    the #sign.
-  [-nogui] (optional) run the match without the gui, for highest possible 
-    speed.(ignores speed value if present)
-  [-speed=<N>] (optional, defaults to 1) updates GUI after every N ticks.  
-    The higher the N, the faster the match will play.
-  [-timeout=<N>] (optional, default 50000) number of ticks a match will 
-    last at most.
-    
-  the names of the rb files have to match the class names of the robots
-  (up to 8 robots)
-  e.g. 'ruby rrobots.rb SittingDuck NervousDuck'
-  or 'ruby rrobots.rb 600x600 #1234567890 SittingDuck NervousDuck'
+  Usage: rrobots [options] file1 file2 ...
+          --resolution x,y             X and Y resolution
+          --match N                    Replay match number N
+          --timeout N                  Maximum number of ticks for a match
+          --teams N                    Splits robots into N teams
+          --[no-]gui                   Run the match with the GUI
+      -h, --help                       Show this message
 
 If you want to run a tournament call:
 
-ruby tournament.rb [-timeout=<N>] [-matches=<N>] 
-      (-dir=<Directory> | <RobotClassName[.rb]>+)
-
-  [-timeout=<N>] (optional, default 10000) number of ticks a match 
-    will last at most.
-  [-matches=<N>] (optional, default 2) how many times each robot 
-    fights every other robot.
-  -dir=<Directory> All .rb files from that directory will be 
-    matched against each other.
+  Usage: tournament [options] file1 file2 ...
+          --resolution x,y             X and Y resolution
+          --matches N                  Number of times each robot fights each other robot N
+          --timeout N                  Maximum number of ticks for a match
+          --dir N                      All robots from this directory will be matched against each other
+      -h, --help                       Show this message
     
-  the names of the rb files have to match the class names of the robots.
+The names of the rb files have to match the class names of the robots.
 
 Each robot is matched against each other 1on1. The results are available 
 as yaml or html files.
