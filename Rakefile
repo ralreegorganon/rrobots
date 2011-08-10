@@ -10,8 +10,8 @@ begin
     gem.email = "jasonedwardjones@gmail.com"
     gem.homepage = "http://github.com/ralreegorganon/rrobots"
     gem.authors = ["Jason Jones"]
-    
     gem.executables = ["rrobots", "tournament"]
+    gem.add_dependency "gosu"
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
