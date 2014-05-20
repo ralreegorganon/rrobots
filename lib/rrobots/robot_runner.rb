@@ -190,9 +190,12 @@ class RobotRunner
     @battlefield.robots.each do |other|
       if (other != self) && (!other.dead)
         a = Math.atan2(@y - other.y, other.x - @x) / Math::PI * 180 % 360
-        if (@old_radar_heading <= a && a <= @new_radar_heading) || (@old_radar_heading >= a && a >= @new_radar_heading) ||
-            (@old_radar_heading <= a+360 && a+360 <= @new_radar_heading) || (@old_radar_heading >= a+360 && a+360 >= new_radar_heading) ||
-            (@old_radar_heading <= a-360 && a-360 <= @new_radar_heading) || (@old_radar_heading >= a-360 && a-360 >= @new_radar_heading)
+        if ((@old_radar_heading <= a     && a <= @new_radar_heading)     ||
+            (@old_radar_heading >= a     && a >= @new_radar_heading)     ||
+            (@old_radar_heading <= a+360 && a+360 <= @new_radar_heading) ||
+            (@old_radar_heading >= a+360 && a+360 >= new_radar_heading)  ||
+            (@old_radar_heading <= a-360 && a-360 <= @new_radar_heading) ||
+            (@old_radar_heading >= a-360 && a-360 >= @new_radar_heading))
           @events['robot_scanned'] << [Math.hypot(@y - other.y, other.x - @x)]
         end
       end
