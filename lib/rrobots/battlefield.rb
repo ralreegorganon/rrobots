@@ -46,7 +46,7 @@ class Battlefield
     robots.each do |robot|
       begin
         robot.send :internal_tick unless robot.dead
-      rescue Exception => bang
+      rescue RuntimeError => bang
         puts "#{robot} made an exception:"
         puts "#{bang.class}: #{bang}", bang.backtrace
         robot.instance_eval{@energy = -1}
