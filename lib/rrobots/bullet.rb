@@ -1,3 +1,4 @@
+# :stopdoc:
 class Bullet
   attr_accessor :x
   attr_accessor :y
@@ -10,7 +11,7 @@ class Bullet
   def initialize bf, x, y, heading, speed, energy, origin
     @x, @y, @heading, @origin = x, y, heading, origin
     @speed, @energy = speed, energy
-    @battlefield, dead = bf, false
+    @battlefield, @dead = bf, false
   end
 
   def state

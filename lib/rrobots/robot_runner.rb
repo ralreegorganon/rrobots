@@ -1,3 +1,4 @@
+# :stopdoc:
 class RobotRunner
 
   STATE_IVARS = [ :x, :y, :gun_heat, :heading, :gun_heading, :radar_heading, :time, :size, :speed, :energy, :team ]
@@ -16,9 +17,6 @@ class RobotRunner
 
   #AI of this robot
   attr_accessor :robot
-
-  #team of this robot
-  attr_accessor :team
 
   #keeps track of total damage done by this robot
   attr_accessor :damage_given
@@ -192,10 +190,14 @@ class RobotRunner
     @battlefield.robots.each do |other|
       if (other != self) && (!other.dead)
         a = Math.atan2(@y - other.y, other.x - @x) / Math::PI * 180 % 360
-        if (@old_radar_heading <= a && a <= @new_radar_heading) || (@old_radar_heading >= a && a >= @new_radar_heading) ||
-          (@old_radar_heading <= a+360 && a+360 <= @new_radar_heading) || (@old_radar_heading >= a+360 && a+360 >= new_radar_heading) ||
-          (@old_radar_heading <= a-360 && a-360 <= @new_radar_heading) || (@old_radar_heading >= a-360 && a-360 >= @new_radar_heading)
-           @events['robot_scanned'] << [Math.hypot(@y - other.y, other.x - @x)]
+        if ((@old_radar_heading <= a     && a <= @new_radar_heading)     ||
+            (@old_radar_heading >= a     && a >= @new_radar_heading)     ||
+            # TODO: verify this logic even works
+            (@old_radar_heading <= a+360 && a+360 <= @new_radar_heading) ||
+            (@old_radar_heading >= a+360 && a+360 >= @new_radar_heading) ||
+            (@old_radar_heading <= a-360 && a-360 <= @new_radar_heading) ||
+            (@old_radar_heading >= a-360 && a-360 >= @new_radar_heading))
+          @events['robot_scanned'] << [Math.hypot(@y - other.y, other.x - @x)]
         end
       end
     end

@@ -1,3 +1,4 @@
+# :stopdoc:
 class Explosion
   attr_accessor :x
   attr_accessor :y
@@ -6,7 +7,7 @@ class Explosion
 
   def initialize bf, x, y
     @x, @y, @t = x, y, 0
-    @battlefield, dead = bf, false
+    @battlefield, @dead = bf, false
   end
 
   def state

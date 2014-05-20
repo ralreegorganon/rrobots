@@ -1,4 +1,7 @@
 #!/usr/bin/env ruby
+
+# :stopdoc:
+
 require 'rrobots'
 require 'optparse'
 require 'ostruct'
@@ -12,11 +15,11 @@ class OptionsParser
     options.timeout = 50000
     options.teams = 8
 
-    opts = OptionParser.new do |opts|
+    o = OptionParser.new do |opts|
       opts.banner = "Usage: rrobots [options] file1 file2 ..."
 
       opts.on("--resolution x,y", Array, "X and Y resolution") do |resolution|
-        options.resolution = resolution.map &:to_i
+        options.resolution = resolution.map(&:to_i)
       end
 
       opts.on("--match N", Integer, "Replay match number N") do |n|
@@ -40,15 +43,18 @@ class OptionsParser
         exit
       end
     end
-    opts.parse!(args)
+
+    o.parse!(args)
+
     if ARGV.size == 0
-      puts opts
+      puts o
       exit
     end
+
     return options
   end
 end
-    
+
 def run_out_of_gui(battlefield)
   $stderr.puts 'match ends if only 1 bot/team left or dots get here-->|'
 
@@ -65,9 +71,10 @@ def run_in_gui(battlefield, xres, yres)
   arena = RRobotsGameWindow.new(battlefield, xres, yres)
   game_over_counter = battlefield.teams.all?{|k,t| t.size < 2} ? 250 : 500
   outcome_printed = false
-  arena.on_game_over{|battlefield|
+
+  arena.on_game_over{ |bf|
     unless outcome_printed
-      print_outcome(battlefield)
+      print_outcome(bf)
       outcome_printed = true
     end
     if game_over_counter < 0
@@ -76,6 +83,7 @@ def run_in_gui(battlefield, xres, yres)
     end
     game_over_counter -= 1
   }
+
   arena.show
 end
 
@@ -102,7 +110,7 @@ def print_outcome(battlefield)
   puts "seed :         #{battlefield.seed}"
   puts
   puts "robots :"
-  battlefield.robots.each do |robot|
+  battlefield.robots.sort_by { |r| -r.damage_given }.each do |robot|
     puts "  #{robot.name}:"
     puts "    damage_given: #{'%.1f' % robot.damage_given}"
     puts "    damage_taken: #{'%.1f' % (100 - robot.energy)}"
@@ -119,21 +127,23 @@ def setup_battlefield(options, robots)
   robots.map! do |robot|
     begin
       begin
-        require "./"+robot.downcase
+        require "./#{robot.downcase}"
       rescue LoadError
+        begin
+          require "./#{robot}"
+        rescue LoadError
+        end
       end
-      begin
-        require "./"+robot
-      rescue LoadError
-    end
-    in_game_name = File.basename(robot).sub(/\..*$/, '')
-    in_game_name[0] = in_game_name[0,1].upcase
-    team = c / team_divider
-    c += 1
-    robotrunner = RobotRunner.new(Object.const_get(in_game_name).new, battlefield, team)
-    battlefield << robotrunner
-    rescue Exception => error
-      puts 'Error loading ' + robot + '!'
+      in_game_name = File.basename(robot).sub(/\..*$/, '')
+      in_game_name[0] = in_game_name[0,1].upcase
+      team = c / team_divider
+      c += 1
+
+      bot_klass = Object.const_get(in_game_name)
+      robotrunner = RobotRunner.new(bot_klass.new, battlefield, team)
+      battlefield << robotrunner
+    rescue RuntimeError, NameError => error
+      puts "Error loading #{robot}: #{error}"
       warn error
     end
     in_game_name
@@ -145,8 +155,8 @@ $stdout.sync = true
 
 options = OptionsParser.parse!(ARGV)
 robots = ARGV
-battlefield = setup_battlefield(options, robots)  
-  
+battlefield = setup_battlefield(options, robots)
+
 if options.gui
   run_in_gui(battlefield, options.resolution[0], options.resolution[1])
 else
