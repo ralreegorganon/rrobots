@@ -1,9 +1,9 @@
 # :stopdoc:
 class Leaderboard
   def initialize(window, robots)
-    @font_size = 24 
+    @font_size = 24
     @robots = robots
-    @font = Gosu::Font.new(window, 'Courier New', @font_size) 
+    @font = Gosu::Font.new(window, 'Courier New', @font_size)
     @x_offset = @font_size
     @y_offset = @font_size * 2
   end

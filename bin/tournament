@@ -29,7 +29,7 @@ class OptionsParser
       opts.on("--timeout N", Integer, "Maximum number of ticks for a match") do |n|
         options.timeout = n
       end
-      
+
       opts.on("--dir N", String, "All robots from this directory will be matched against each other") do |n|
         options.directory = n
       end
@@ -51,7 +51,7 @@ end
 
 
 def print_header(html)
-  header = '''  
+  header = '''
   <html>
   <head> <title>RRobots Tournament Results </title>
   <style type="text/css">
@@ -69,13 +69,13 @@ def print_header(html)
       padding:4px;
     }
     td.sum {font-weight:bold;}
-    td.blank {background-color:white}	
+    td.blank {background-color:white}
   -->
-  </style>	
+  </style>
   </head>
   <body>
   '''
-html.print(header)
+  html.print(header)
 end
 
 def print_footer(html)
@@ -97,7 +97,7 @@ def rank_by_round_stat(stat, rounds)
 end
 
 # print a html page with a table containing once cell per round
-# include  stat in that cell.  if r is the round in question 
+# include  stat in that cell.  if r is the round in question
 # then r.bots[current_bot][stat] had better exist!
 def print_round_table(stat, rounds, ranking, round_tables, html)
   #ranking is an array of 2 element arrays - we just want the first element in the 'sub' array,
@@ -123,7 +123,7 @@ def print_round_table(stat, rounds, ranking, round_tables, html)
         if round == nil then puts "couldn't find round bewtween #{row} and #{col}" end
         html.puts "    <td> #{ '%.1f'% round.bots[row][stat] } </td>"
         row_total += round.bots[row][stat]
-      else  
+      else
         html.puts"    <td> --- </td>"
       end
     end
@@ -137,23 +137,23 @@ def print_index(round_tables, rankings, stats, html)
   html.puts"<a name='top'></a>"
   html.puts "<h1> Round Summary Tables </h1>"
   html.puts "<ul>"
-  
+
   round_tables.each { |t| html.puts "<li><a href='##{t}'>#{t}</a></li>"  }
-  
+
   html.puts "</ul>"
   html.puts "<h1> Rankings</h1>"
   html.puts "<table><tr>"
-  
+
   stats.each do |stat|
     html.puts "<td>#{stat}<table>"
     list = rankings[stat]
     list.each {|row| html.puts "<tr><td>#{row[0]}</td> <td> #{'%.1f'%row[1]}</td></tr>"}
-    
+
     html.puts "</table></td>"
   end
-  
+
   html.puts "</tr></table>"
-  
+
   html.puts """
     <h1>Definitions:</h1>
     <ul>
@@ -170,33 +170,33 @@ def print_index(round_tables, rankings, stats, html)
 end
 
 def to_html match_data, html
-	print_header(html)
-	
-	round_matches = Hash.new {|h,k| h[k] = []}
-	robots = []
-	
-	match_data.each do |m|
-	  match = Match.new(m)
-	  round_matches[m['round']] << match
-	  robots << match.winner
-	  robots << match.loser
-	end
-	robots = robots.uniq
-	
-	rounds = []
-	round_matches.values.each do |matches|
-	  r = Round.new(matches)
-	  rounds << r
-	end
-	
-	stats = ['wins', 'points','round_wins', 'margin', 'simul', 'timedout', 'ties']
-	rankings = {}
-	stats.each{|stat| rankings[stat] = rank_by_round_stat(stat, rounds)}
-	
-	print_index(stats, rankings, stats, html) #pass stats array in instead of using rankings.keys so we can preserve order
-	stats.each {|stat|  print_round_table(stat, rounds, rankings[stat],stats, html) }
-	print_footer(html)
-	html.close
+  print_header(html)
+
+  round_matches = Hash.new {|h,k| h[k] = []}
+  robots = []
+
+  match_data.each do |m|
+    match = Match.new(m)
+    round_matches[m['round']] << match
+    robots << match.winner
+    robots << match.loser
+  end
+  robots = robots.uniq
+
+  rounds = []
+  round_matches.values.each do |matches|
+    r = Round.new(matches)
+    rounds << r
+  end
+
+  stats = ['wins', 'points','round_wins', 'margin', 'simul', 'timedout', 'ties']
+  rankings = {}
+  stats.each{|stat| rankings[stat] = rank_by_round_stat(stat, rounds)}
+
+  print_index(stats, rankings, stats, html) #pass stats array in instead of using rankings.keys so we can preserve order
+  stats.each {|stat|  print_round_table(stat, rounds, rankings[stat],stats, html) }
+  print_footer(html)
+  html.close
 end
 
 ####################################################################
@@ -228,7 +228,7 @@ round_number = 0
 opponents = robots.clone
 @all_match_data = []
 robots.each do |bot1|
-	
+
   opponents.delete bot1
   opponents.each do |bot2|
     round_number += 1
@@ -239,7 +239,7 @@ robots.each do |bot1|
     options.matches.times do |i|
       puts "- Match #{i+1} of #{options.matches} -"
       cmd = "rrobots --no-gui --timeout #{options.timeout} #{options.directory}/#{bot1} #{options.directory}/#{bot2}"
-      
+
       # using popen instead of `cmd` lets us see the progress dots (......) output as the match progresses.
       sub = IO.popen(cmd)
       results_string = sub.read
@@ -250,7 +250,7 @@ robots.each do |bot1|
       match_data['round'] = round_number
       match_data['timedout'] = 1 if options.timeout <= match_data['elapsed_ticks']
       @all_match_data << match_data
-      
+
       match = Match.new(match_data)
       puts
       puts match.one_line_summary
@@ -273,5 +273,3 @@ round_results = []
 rounds.each {|round| round_results << round.one_line_summary}
 round_results = round_results.sort
 round_results.each {|r| puts r}
-
-

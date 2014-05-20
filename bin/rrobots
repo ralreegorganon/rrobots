@@ -51,7 +51,7 @@ class OptionsParser
     return options
   end
 end
-    
+
 def run_out_of_gui(battlefield)
   $stderr.puts 'match ends if only 1 bot/team left or dots get here-->|'
 
@@ -128,13 +128,13 @@ def setup_battlefield(options, robots)
       begin
         require "./"+robot
       rescue LoadError
-    end
-    in_game_name = File.basename(robot).sub(/\..*$/, '')
-    in_game_name[0] = in_game_name[0,1].upcase
-    team = c / team_divider
-    c += 1
-    robotrunner = RobotRunner.new(Object.const_get(in_game_name).new, battlefield, team)
-    battlefield << robotrunner
+      end
+      in_game_name = File.basename(robot).sub(/\..*$/, '')
+      in_game_name[0] = in_game_name[0,1].upcase
+      team = c / team_divider
+      c += 1
+      robotrunner = RobotRunner.new(Object.const_get(in_game_name).new, battlefield, team)
+      battlefield << robotrunner
     rescue Exception => error
       puts 'Error loading ' + robot + '!'
       warn error
@@ -148,8 +148,8 @@ $stdout.sync = true
 
 options = OptionsParser.parse!(ARGV)
 robots = ARGV
-battlefield = setup_battlefield(options, robots)  
-  
+battlefield = setup_battlefield(options, robots)
+
 if options.gui
   run_in_gui(battlefield, options.resolution[0], options.resolution[1])
 else

@@ -1,15 +1,15 @@
 # :stopdoc:
 class Battlefield
-   attr_reader :width
-   attr_reader :height
-   attr_reader :robots
-   attr_reader :teams
-   attr_reader :bullets
-   attr_reader :explosions
-   attr_reader :time
-   attr_reader :seed
-   attr_reader :timeout  # how many ticks the match can go before ending.
-   attr_reader :game_over
+  attr_reader :width
+  attr_reader :height
+  attr_reader :robots
+  attr_reader :teams
+  attr_reader :bullets
+  attr_reader :explosions
+  attr_reader :time
+  attr_reader :seed
+  attr_reader :timeout  # how many ticks the match can go before ending.
+  attr_reader :game_over
 
   def initialize width, height, timeout, seed
     @width, @height = width, height
@@ -56,8 +56,8 @@ class Battlefield
     @time += 1
     live_robots = robots.find_all{|robot| !robot.dead}
     @game_over = (  (@time >= timeout) or # timeout reached
-                    (live_robots.length == 0) or # no robots alive, draw game
-                    (live_robots.all?{|r| r.team == live_robots.first.team})) # all other teams are dead
+                  (live_robots.length == 0) or # no robots alive, draw game
+                  (live_robots.all?{|r| r.team == live_robots.first.team})) # all other teams are dead
     not @game_over
   end
 
