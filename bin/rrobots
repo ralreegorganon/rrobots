@@ -110,7 +110,7 @@ def print_outcome(battlefield)
   puts "seed :         #{battlefield.seed}"
   puts
   puts "robots :"
-  battlefield.robots.each do |robot|
+  battlefield.robots.sort_by { |r| -r.damage_given }.each do |robot|
     puts "  #{robot.name}:"
     puts "    damage_given: #{'%.1f' % robot.damage_given}"
     puts "    damage_taken: #{'%.1f' % (100 - robot.energy)}"
