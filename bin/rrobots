@@ -15,11 +15,11 @@ class OptionsParser
     options.timeout = 50000
     options.teams = 8
 
-    opts = OptionParser.new do |opts|
+    o = OptionParser.new do |opts|
       opts.banner = "Usage: rrobots [options] file1 file2 ..."
 
       opts.on("--resolution x,y", Array, "X and Y resolution") do |resolution|
-        options.resolution = resolution.map &:to_i
+        options.resolution = resolution.map(&:to_i)
       end
 
       opts.on("--match N", Integer, "Replay match number N") do |n|
@@ -43,11 +43,14 @@ class OptionsParser
         exit
       end
     end
-    opts.parse!(args)
+
+    o.parse!(args)
+
     if ARGV.size == 0
-      puts opts
+      puts o
       exit
     end
+
     return options
   end
 end
@@ -68,9 +71,10 @@ def run_in_gui(battlefield, xres, yres)
   arena = RRobotsGameWindow.new(battlefield, xres, yres)
   game_over_counter = battlefield.teams.all?{|k,t| t.size < 2} ? 250 : 500
   outcome_printed = false
-  arena.on_game_over{|battlefield|
+
+  arena.on_game_over{ |bf|
     unless outcome_printed
-      print_outcome(battlefield)
+      print_outcome(bf)
       outcome_printed = true
     end
     if game_over_counter < 0
@@ -79,6 +83,7 @@ def run_in_gui(battlefield, xres, yres)
     end
     game_over_counter -= 1
   }
+
   arena.show
 end
 
@@ -122,21 +127,23 @@ def setup_battlefield(options, robots)
   robots.map! do |robot|
     begin
       begin
-        require "./"+robot.downcase
+        require "./#{robot.downcase}"
       rescue LoadError
-      end
-      begin
-        require "./"+robot
-      rescue LoadError
+        begin
+          require "./#{robot}"
+        rescue LoadError
+        end
       end
       in_game_name = File.basename(robot).sub(/\..*$/, '')
       in_game_name[0] = in_game_name[0,1].upcase
       team = c / team_divider
       c += 1
-      robotrunner = RobotRunner.new(Object.const_get(in_game_name).new, battlefield, team)
+
+      bot_klass = Object.const_get(in_game_name)
+      robotrunner = RobotRunner.new(bot_klass.new, battlefield, team)
       battlefield << robotrunner
     rescue Exception => error
-      puts 'Error loading ' + robot + '!'
+      puts "Error loading #{robot}: #{error}"
       warn error
     end
     in_game_name

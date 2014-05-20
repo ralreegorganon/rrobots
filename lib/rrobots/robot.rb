@@ -185,7 +185,7 @@ module Robot
   # to stop (and you have to call it every tick).
 
   def stop
-    accelerate((speed > 0) ? -1 : ((speed < 0) ? 1 :0))
+    accelerate((speed > 0) ? -1 : ((speed < 0) ? 1 : 0))
   end
 
   ##

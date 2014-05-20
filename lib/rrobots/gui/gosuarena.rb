@@ -75,7 +75,6 @@ class RRobotsGameWindow < Gosu::Window
                     else
                       "Team #{winner.team} won!"
                     end
-        text_color = winner ? winner.team : 7
         @font.draw_rel("#{whohaswon}", xres/2, yres/2, ZOrder::UI, 0.5, 0.5, 1, 1, 0xffffff00)
       end
       @battlefield.tick
