@@ -1,3 +1,4 @@
+# :stopdoc:
 class Leaderboard
   def initialize(window, robots)
     @font_size = 24 

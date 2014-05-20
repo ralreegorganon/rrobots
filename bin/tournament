@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# :stopdoc:
+
 require "yaml"
 require 'optparse'
 require 'ostruct'

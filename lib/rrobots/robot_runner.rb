@@ -1,3 +1,4 @@
+# :stopdoc:
 class RobotRunner
 
   STATE_IVARS = [ :x, :y, :gun_heat, :heading, :gun_heading, :radar_heading, :time, :size, :speed, :energy, :team ]

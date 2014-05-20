@@ -1,4 +1,7 @@
 #!/usr/bin/env ruby
+
+# :stopdoc:
+
 require 'rrobots'
 require 'optparse'
 require 'ostruct'

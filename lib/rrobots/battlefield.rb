@@ -1,3 +1,4 @@
+# :stopdoc:
 class Battlefield
    attr_reader :width
    attr_reader :height

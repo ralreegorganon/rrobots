@@ -1,3 +1,4 @@
+# :stopdoc:
 class Match
   attr_reader :bots
   attr_reader :seed

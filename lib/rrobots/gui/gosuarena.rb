@@ -1,3 +1,4 @@
+# :stopdoc:
 require 'gosu'
 
 BIG_FONT = 'Courier New'

@@ -1,3 +1,4 @@
+# :stopdoc:
 class Explosion
   attr_accessor :x
   attr_accessor :y

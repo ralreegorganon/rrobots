@@ -1,3 +1,4 @@
+# :stopdoc:
 class Round
   attr_accessor :matches
   attr_accessor :winner
